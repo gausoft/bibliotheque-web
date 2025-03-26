@@ -1,70 +1,45 @@
 <?php
-class addBook {
+require 'book.php';
+require 'config.php';
 
-    protected string $title;
-    protected string $author;
-    protected string $publish_at;
-    protected bool $available;
-
-    public function __construct($title, $author, $publish_at, $available = true)
-    {
-        $this->title = $title;
-        $this->author = $author;
-        $this->publish_at= $publish_at;
-        $this->available = $available;
+header("Access-Control-Alloow-Origin: *");
+header("Content-Type: application/json; charset = utf8");
+header("Access-Control-Alloow-Methods: POST");
 
 
-    } 
+if($_SERVER['REQUEST_METHOD'] === "POST")
+{
 
-    public function getTitle(){
-        return $this->title;
-    }
+    //instantiation de la base de donnée
+        $connect = new database;
+        $connect = $connect->getPdo();
 
-    public function getAuthor(){
-        return $this->author;
-    }
+        
+        $book = new Book();
+        $data = json_decode(file_get_contents("php://input"));
+        //verificaton des données reçus et ajout du livre a la base de données
+        if(!empty($data->title) && !empty($data->author) && !empty($data->publish_at)){
+            $book->setTitle(htmlspecialchars($data->title));
+            $book->setAuthor(htmlspecialchars($data->author));
+            $book->setPublishDate(htmlspecialchars($data->publish_at));
+            
+            $req = $book->addBook($connect);
 
-    public function getPublishDate(){
-        return $this->publish_at;
-    }
-
-    public function getAvailable(){
-        return $this->available;
-    }
-    
-    public function setTitle($title){
-         $this->title = $title;
-         return $this->title;
-    }
-
-    public function setAuthor($author){
-        $this->author = $author;
-        return $this->author;
-    }
-
-   public function setPublishDate($publish_at){
-    $this->publish_at = $publish_at;
-    return $this->publish_at;
-    }
-
-    public function setAvailable($available){
-        $this->available = $available;
-        return $this->available;
-   }
-
-   public function addBook($pdo){
-        $sql = 
-            "INSERT INTO books ('title', 'author' , 'publish_at', 'available') 
-            VALUES (':title', ':author' ,':publish_at', ':available')";
-
-        $statement = $pdo->prepare($sql);
-        $statement->execute([':title' => $this->title,
-                         ':author' => $this->author,
-                         ':publish_at' => $this->publish_at,
-                         ':available' => $this->available]);
+            if($req){
+                echo json_encode(['Message' => 'livre ajouté']);
+            }else{
+                echo json_encode(['Message' => 'impossible dájouter le livre']);
+            }
 
 
+        }else{
+            echo json_encode(['Message' => 'les données ne sont pas au complet']);
+        }
 
-   }
 
+}else{
+    echo json_encode(['Message' => 'la methode nést pas authorisé']);
 }
+
+
+
