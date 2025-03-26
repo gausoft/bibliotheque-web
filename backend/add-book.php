@@ -2,9 +2,9 @@
 require 'book.php';
 require 'config.php';
 
-header("Access-Control-Alloow-Origin: *");
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset = utf8");
-header("Access-Control-Alloow-Methods: POST");
+header("Access-Control-Allow-Methods: POST");
 
 
 if($_SERVER['REQUEST_METHOD'] === "POST")
@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 
 
 }else{
-    echo json_encode(['Message' => 'la methode nést pas authorisé']);
+    echo json_encode(["Message" => "la methode n'est pas authorisé"]);
 }
 
 

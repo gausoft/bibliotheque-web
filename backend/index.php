@@ -2,9 +2,9 @@
 require 'book.php';
 require 'config.php';
 
-header("Access-Control-Alloow-Origin: *");
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset = utf8");
-header("Access-Control-Alloow-Methods: GET");
+header("Access-Control-Allow-Methods: GET");
 
 
 if($_SERVER['REQUEST_METHOD'] === "GET")
@@ -24,14 +24,14 @@ if($_SERVER['REQUEST_METHOD'] === "GET")
 
             echo json_encode($books);
         }else{
-            echo json_encode(["Message' => 'aucun livre trouvé"]);
+            echo json_encode(["Message" => "aucun livre trouvé"]);
 
         }
 
 
 
 }else{
-    echo json_encode(["Message' => 'la methode n'est pas authorisé"]);
+    echo json_encode(["Message" => "la methode n'est pas authorisé"]);
 }
 
  

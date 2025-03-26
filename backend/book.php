@@ -79,12 +79,12 @@ class book {
                             title = :title,
                             author = :author, 
                             publish_at = :publish_at,
-                            available = :availaible)
+                            available = :available)
                     WHERE title = $this->title";
             
     
         $prepareSql = $pdo->prepare($sql);
-        $req = $prepareSql->execute(['titre' => $this->title, 'author' =>$this->author ,
+        $req = $prepareSql->execute(['title' => $this->title, 'author' =>$this->author ,
                                     'publish_at' => $this->publish_at,'available' => $this->available]);
 
         if($req > 0){
@@ -109,12 +109,12 @@ class book {
     public function deleteBook($pdo){
         $sql = "DELETE FROM books WHERE title = :title";
         $prepareSql = $pdo->prepare($sql);
-        $req = $prepareSql->execute(["title => $this->title"]);
+        $req = $prepareSql->execute(["title" => $this->title]);
 
         if($req){
             return true;
         }else{
-            false;
+            return false;
         }
 
 
