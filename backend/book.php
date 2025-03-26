@@ -7,7 +7,7 @@ class book {
     protected string $author;
     protected string $publish_at;
     protected bool $available = true;
-    protected $pdo;
+    // protected $pdo;
 
     public function __construct()
     {
@@ -73,17 +73,17 @@ class book {
 
     }
 
-    public function updateBook(){
+    public function updateBook($pdo){
         $sql = 
             "UPDATE books SET ( 
                             title = :title,
                             author = :author, 
                             publish_at = :publish_at,
-                            available = :availaible,
+                            available = :availaible)
                     WHERE title = $this->title";
             
     
-        $prepareSql = $this->pdo->prepare($sql);
+        $prepareSql = $pdo->prepare($sql);
         $req = $prepareSql->execute(['titre' => $this->title, 'author' =>$this->author ,
                                     'publish_at' => $this->publish_at,'available' => $this->available]);
 
@@ -93,8 +93,42 @@ class book {
             return false;
         }
     
+    }
     
+       
+
+    public function getAllbook($pdo){
+        $sql = "SELECT title, author, publish_at, available FROM books";
+        $req = $pdo->query($sql,PDO::FETCH_ASSOC);
+
+
+        
+        return $req;
     
-       }
+    }
+
+    public function deleteBook($pdo){
+        $sql = "DELETE FROM books WHERE title = :title";
+        $prepareSql = $pdo->prepare($sql);
+        $req = $prepareSql->execute(["title => $this->title"]);
+
+        if($req){
+            return true;
+        }else{
+            false;
+        }
+
+
+    }
+
+        
+    
+
+
+
+
+     
+
+    
 
 }
