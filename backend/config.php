@@ -5,7 +5,7 @@ $password = '';
 $dbname = 'bibliotheque';
 
 try {
-    $pdo = new PDO("mysql:host=$host", $user, $password);
+    $pdo = new PDO("sqlite:host=$host", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     $pdo->exec("CREATE DATABASE IF NOT EXISTS $dbname");
