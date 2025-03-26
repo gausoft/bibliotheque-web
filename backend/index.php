@@ -1,7 +1,11 @@
 <?php
-header("Content-Type: application/json");
-require_once "config.php";
+require 'config.php';
 
-$stmt = $pdo->query("SELECT * FROM books ORDER BY id DESC");
-echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+try {
+    $stmt = $pdo->query("SELECT * FROM books");
+    $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($books);
+} catch (PDOException $e) {
+    echo json_encode(["error" => "Erreur de récupération des livres"]);
+}
 ?>

@@ -2,93 +2,32 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier un Livre</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-        h2 { text-align: center; }
-        select, input, button { width: 100%; padding: 10px; margin-top: 10px; font-size: 16px; }
-        .hidden { display: none; }
-    </style>
     <script>
         async function fetchBooks() {
-            try {
-                let response = await fetch("../backend/index.php");
-                let books = await response.json();
-
-                let bookSelect = document.getElementById("bookSelect");
-                bookSelect.innerHTML = '<option value="">Sélectionner un livre</option>';
-
-                books.forEach(book => {
-                    let option = document.createElement("option");
-                    option.value = book.id;
-                    option.textContent = `${book.title} - ${book.author} (${book.published_year})`;
-                    bookSelect.appendChild(option);
-                });
-
-                document.getElementById("updateForm").classList.add("hidden");
-            } catch (error) {
-                console.error("Erreur lors du chargement des livres :", error);
-                alert("Impossible de charger les livres.");
-            }
-        }
-
-        function loadBookDetails() {
-            let bookId = document.getElementById("bookSelect").value;
-            if (!bookId) {
-                document.getElementById("updateForm").classList.add("hidden");
-                return;
-            }
-
-            let selectedBook = document.getElementById("bookSelect").selectedOptions[0].textContent;
-            let [title, authorYear] = selectedBook.split(" - ");
-            let [author, publishedYear] = authorYear.split(" (");
-            publishedYear = publishedYear.replace(")", "");
-
-            document.getElementById("title").value = title;
-            document.getElementById("author").value = author;
-            document.getElementById("publishedYear").value = publishedYear;
-            document.getElementById("updateForm").classList.remove("hidden");
+            let response = await fetch("../backend/index.php");
+            let books = await response.json();
+            let select = document.getElementById("bookSelect");
+            select.innerHTML = '<option value="">Sélectionner un livre</option>';
+            books.forEach(book => {
+                select.innerHTML += `<option value="${book.id}">${book.title} - ${book.author}</option>`;
+            });
         }
 
         async function updateBook(event) {
             event.preventDefault();
-
-            let bookId = document.getElementById("bookSelect").value;
+            let id = document.getElementById("bookSelect").value;
             let title = document.getElementById("title").value;
             let author = document.getElementById("author").value;
-            let publishedYear = document.getElementById("publishedYear").value;
+            let available = document.getElementById("available").checked ? 1 : 0;
 
-            if (!bookId || !title || !author || !publishedYear) {
-                alert("Veuillez remplir tous les champs !");
-                return;
-            }
+            await fetch("../backend/update-book.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, title, author, available })
+            });
 
-            let bookData = {
-                id: parseInt(bookId),
-                title: title,
-                author: author,
-                published_year: parseInt(publishedYear)
-            };
-
-            try {
-                let response = await fetch("../backend/update-book.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(bookData)
-                });
-
-                let result = await response.json();
-                alert(result.message || result.error);
-
-                if (response.ok) {
-                    fetchBooks(); // Recharger la liste après modification
-                    document.getElementById("updateForm").classList.add("hidden");
-                }
-            } catch (error) {
-                console.error("Erreur :", error);
-                alert("Une erreur est survenue.");
-            }
+            alert("Livre mis à jour");
         }
 
         window.onload = fetchBooks;
@@ -96,15 +35,10 @@
 </head>
 <body>
     <h2>Modifier un Livre</h2>
-
-    <label for="bookSelect">Choisir un livre :</label>
-    <select id="bookSelect" onchange="loadBookDetails()"></select>
-
-    <form id="updateForm" class="hidden" onsubmit="updateBook(event)">
-        <input type="text" id="title" placeholder="Titre" required>
-        <input type="text" id="author" placeholder="Auteur" required>
-        <input type="number" id="publishedYear" placeholder="Année de publication" required>
-        <button type="submit">Mettre à jour</button>
-    </form>
+    <select id="bookSelect" onchange="updateBook(event)"></select>
+    <input type="text" id="title" placeholder="Titre">
+    <input type="text" id="author" placeholder="Auteur">
+    <label><input type="checkbox" id="available"> Disponible</label>
+    <button onclick="updateBook(event)">Mettre à jour</button>
 </body>
 </html>
