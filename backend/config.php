@@ -1,12 +1,13 @@
 <?php
 
- class database{
+ class connectionDb{
 
 
-      public function getPdo(){
+      public function getConnect(){
       try{
          $PDO = new PDO("sqlite:library.sqlite");
          $PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
       }catch(PDOException $e) {
          echo "Connection error: " . $e->getMessage();
       }

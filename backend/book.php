@@ -97,10 +97,9 @@ class book {
     
        
 
-    public function getAllbook($pdo){
-        $sql = "SELECT title, author, publish_at, available FROM books";
-        $req = $pdo->query($sql,PDO::FETCH_ASSOC);
-
+    public function getAllBook($pdo){
+        $sql = "SELECT * FROM books";
+        $req = $pdo->query($sql);
 
         
         return $req;

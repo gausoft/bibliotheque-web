@@ -1,6 +1,5 @@
 <?php
 require 'book.php';
-require 'add-book.php';
 require 'config.php';
 
 header("Access-Control-Alloow-Origin: *");
@@ -12,14 +11,16 @@ if($_SERVER['REQUEST_METHOD'] === "GET")
 {
 
     //instantiation de la base de donnée
-        $connect = new database;
-        $connect = $connect->getPdo();
+        $connect = new connectionDb;
+        $connect = $connect->getConnect();
 
         // recuperation des livres
         $book = new Book();
-        $stmt = $book->getAllbook($connect);
+        $stmt = $book->getAllBook($connect);
+
         if($stmt->rowCount() > 0){
-            $books[] = $stmt->fetchAll();
+            $books= $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
             echo json_encode($books);
         }else{

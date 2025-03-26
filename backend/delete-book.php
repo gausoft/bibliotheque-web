@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+use Dba\Connection;
 
 require 'book.php';
 require 'config.php';
@@ -12,8 +14,8 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 {
 
     //instantiation de la base de donnée
-        $connect = new database;
-        $connect = $connect->getPdo();
+        $connect = new connectionDb;
+        $connect = $connect->getConnect();
 
         //instantiation d'un livre et ajout du livre a la base de donnés
         $book = new Book();
