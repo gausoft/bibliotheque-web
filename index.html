@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Bibliothèque</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        h2 { text-align: center; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        input, button { padding: 10px; font-size: 16px; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 8px; border-bottom: 1px solid #ddd; }
+        .delete-btn { color: red; cursor: pointer; margin-left: 10px; }
+    </style>
+    <script>
+        async function getBooks() {
+            try {
+                let response = await fetch("backend/index.php");
+                let books = await response.json();
+
+                const bookList = document.getElementById("bookList");
+                bookList.innerHTML = ""; // Vider la liste
+
+                if (Array.isArray(books) && books.length > 0) {
+                    books.forEach(book => {
+                        const li = document.createElement("li");
+                        li.innerHTML = `${book.title} - ${book.author} (${book.published_year}) 
+                            <span class="delete-btn" onclick="deleteBook(${book.id})">❌</span>`;
+                        bookList.appendChild(li);
+                    });
+                } else {
+                    bookList.innerHTML = "<li>Aucun livre trouvé.</li>";
+                }
+            } catch (error) {
+                console.error("Erreur :", error);
+                alert("Erreur lors du chargement des livres.");
+            }
+        }
+
+        async function addBook(event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+
+            let title = document.getElementById("title").value;
+            let author = document.getElementById("author").value;
+            let publishedYear = document.getElementById("publishedYear").value;
+
+            if (!title || !author || !publishedYear) {
+                alert("Veuillez remplir tous les champs !");
+                return;
+            }
+
+            let bookData = {
+                title: title,
+                author: author,
+                published_year: parseInt(publishedYear)
+            };
+
+            try {
+                let response = await fetch("backend/add-book.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(bookData)
+                });
+
+                let result = await response.json();
+                alert(result.message || result.error);
+                
+                if (response.ok) {
+                    document.getElementById("bookForm").reset();
+                    getBooks(); // Rafraîchir la liste après l'ajout
+                }
+            } catch (error) {
+                console.error("Erreur :", error);
+                alert("Une erreur est survenue.");
+            }
+        }
+
+        async function deleteBook(bookId) {
+            if (!confirm("Voulez-vous vraiment supprimer ce livre ?")) return;
+
+            try {
+                let response = await fetch("backend/delete-book.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: bookId })
+                });
+
+                let result = await response.json();
+                alert(result.message || result.error);
+
+                if (response.ok) {
+                    getBooks(); // Rafraîchir la liste après suppression
+                }
+            } catch (error) {
+                console.error("Erreur :", error);
+                alert("Erreur lors de la suppression du livre.");
+            }
+        }
+
+        window.onload = getBooks;
+    </script>
+</head>
+<body>
+    <h2>Gestion de Bibliothèque</h2>
+
+    <h3>Ajouter un Livre</h3>
+    <form id="bookForm" onsubmit="addBook(event)">
+        <input type="text" id="title" placeholder="Titre du livre" required>
+        <input type="text" id="author" placeholder="Auteur" required>
+        <input type="number" id="publishedYear" placeholder="Année de publication" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h3>Liste des Livres</h3>
+    <ul id="bookList">
+        <!-- Liste des livres chargée dynamiquement -->
+    </ul>
+</body>
+</html>
