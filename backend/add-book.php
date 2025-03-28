@@ -16,25 +16,30 @@ if($_SERVER['REQUEST_METHOD'] === "POST")
 
         
         $book = new Book();
-        $data = json_decode(file_get_contents("php://input"));
+        $datasBook = $_GET;
+        $datascount =  count($datasBook);
+        // var_dump(count($data));
         //verificaton des données reçus et ajout du livre a la base de données
-        if(!empty($data->title) && !empty($data->author) && !empty($data->publish_at)){
-            $book->setTitle(htmlspecialchars($data->title));
-            $book->setAuthor(htmlspecialchars($data->author));
-            $book->setPublishDate(htmlspecialchars($data->publish_at));
+        if(!empty($datasBook) &&  $datascount === 3){
+    
+                $book->setTitle(htmlspecialchars($datasBook['title']));
+                $book->setAuthor(htmlspecialchars($datasBook['author']));
+                $book->setPublishDate(htmlspecialchars($datasBook['publish_at']));
+          
+            
             
             $req = $book->addBook($connect);
 
             if($req){
                 echo json_encode(['Message' => 'livre ajouté']);
             }else{
-                echo json_encode(['Message' => 'impossible dájouter le livre']);
+                echo json_encode(['Message' => 'impossible d\'ajouter le livre']);
             }
-
-
+            
         }else{
-            echo json_encode(['Message' => 'les données ne sont pas au complet']);
+            echo json_encode(['Message' => 'les données ne sont pas au complet']); 
         }
+        
 
 
 }else{

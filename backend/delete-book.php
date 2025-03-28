@@ -1,6 +1,5 @@
 <?php
 
-use Dba\Connection;
 
 require 'book.php';
 require 'config.php';
@@ -19,21 +18,26 @@ if($_SERVER['REQUEST_METHOD'] === "DELETE")
 
         //instantiation d'un livre et ajout du livre a la base de donnés
         $book = new Book();
-        $data = json_decode(file_get_contents("php://input"));
-        if(!empty($data->title)){
-            $book->setTitle(htmlspecialchars($data->title));
+        $datasBookObject = json_decode(file_get_contents("php://input"));
+        $datasBookArray = (array) $datasBookObject;
+        $datasCount =  count($datasBookArray);
+        //verificaton des données reçus et ajout du livre a la base de données
+        if(!empty($datasBookObject) &&  $datasCount === 1){
+    
+                $book->setTitle(htmlspecialchars($datasBookObject->title));
+          
+            
             
             $req = $book->deleteBook($connect);
 
             if($req){
                 echo json_encode(['Message' => 'livre supprimé']);
             }else{
-                echo json_encode(['Message' => 'impossible de modifier le livre']);
+                echo json_encode(['Message' => 'impossible de supprimer le livre']);
             }
-
-
+            
         }else{
-            echo json_encode(['Message' => 'les données ne sont pas au complet']);
+            echo json_encode(['Message' => 'les données ne sont pas au complet']); 
         }
 
 

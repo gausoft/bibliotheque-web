@@ -73,19 +73,22 @@ class book {
 
     }
 
-    public function updateBook($pdo){
+    public function updateBook($pdo,$id){
         $sql = 
-            "UPDATE books SET ( 
+            "UPDATE books SET 
                             title = :title,
                             author = :author, 
                             publish_at = :publish_at,
-                            available = :available)
-                    WHERE title = $this->title";
+                            available = :available
+                        
+                    WHERE books.id = $id";
             
     
         $prepareSql = $pdo->prepare($sql);
-        $req = $prepareSql->execute(['title' => $this->title, 'author' =>$this->author ,
-                                    'publish_at' => $this->publish_at,'available' => $this->available]);
+        $req = $prepareSql->execute([":title" => $this->title,
+                                     ":author" => $this->author,
+                                     ":publish_at" => $this->publish_at,
+                                     ":available" => $this->available]);
 
         if($req > 0){
             return true;
@@ -109,7 +112,7 @@ class book {
     public function deleteBook($pdo){
         $sql = "DELETE FROM books WHERE title = :title";
         $prepareSql = $pdo->prepare($sql);
-        $req = $prepareSql->execute(["title" => $this->title]);
+        $req = $prepareSql->execute(['title' => $this->title]);
 
         if($req){
             return true;
