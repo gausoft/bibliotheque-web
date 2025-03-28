@@ -7,10 +7,10 @@ require 'config.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset = utf8");
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: DELETE");
 
 
-if($_SERVER['REQUEST_METHOD'] === "POST")
+if($_SERVER['REQUEST_METHOD'] === "DELETE")
 {
 
     //instantiation de la base de donnée
