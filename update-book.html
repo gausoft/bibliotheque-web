@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un livre</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { padding: 10px 15px; cursor: pointer; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Modifier un livre</h1>
+    
+    <form id="updateBookForm">
+        <input type="hidden" id="id" name="id">
+        
+        <div class="form-group">
+            <label for="title">Titre:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="author">Auteur:</label>
+            <input type="text" id="author" name="author" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="published_at">Date de publication:</label>
+            <input type="date" id="published_at" name="published_at" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="available">Disponibilité:</label>
+            <select id="available" name="available">
+                <option value="true">Disponible</option>
+                <option value="false">Indisponible</option>
+            </select>
+        </div>
+        
+        <button type="submit">Mettre à jour</button>
+        <button type="button" onclick="window.location.href='index.html'">Retour</button>
+        
+        <div id="message" class="message"></div>
+    </form>
+    
+    <script>
+        // Récupérer l'ID du livre depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('id');
+        
+        // Charger les données du livre
+        async function loadBookData() {
+            if (!bookId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`backend/index.php`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const book = data.books.find(b => b.id == bookId);
+                    
+                    if (book) {
+                        document.getElementById('id').value = book.id;
+                        document.getElementById('title').value = book.title;
+                        document.getElementById('author').value = book.author;
+                        document.getElementById('published_at').value = book.published_at;
+                        document.getElementById('available').value = book.available ? 'true' : 'false';
+                    } else {
+                        alert('Livre non trouvé');
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    alert('Erreur lors du chargement du livre: ' + data.message);
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors du chargement du livre');
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Écouteur pour le formulaire de mise à jour
+        document.getElementById('updateBookForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('id').value;
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const published_at = document.getElementById('published_at').value;
+            const available = document.getElementById('available').value === 'true';
+            
+            try {
+                const response = await fetch('backend/update-book.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id,
+                        title,
+                        author,
+                        published_at,
+                        available
+                    })
+                });
+                
+                const data = await response.json();
+                
+                const messageDiv = document.getElementById('message');
+                if (data.success) {
+                    messageDiv.textContent = 'Livre mis à jour avec succès!';
+                    messageDiv.className = 'success';
+                    
+                    // Redirection après 2 secondes
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    messageDiv.textContent = 'Erreur: ' + data.message;
+                    messageDiv.className = 'error';
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('message').textContent = 'Une erreur est survenue';
+                document.getElementById('message').className = 'error';
+            }
+        });
+        
+        // Charger les données du livre au chargement de la page
+        document.addEventListener('DOMContentLoaded', loadBookData);
+    </script>
+</body>
+</html>

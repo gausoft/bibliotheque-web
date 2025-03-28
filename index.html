@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Bibliothèque</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .available { color: green; }
+        .unavailable { color: red; }
+        .actions { white-space: nowrap; }
+        button { cursor: pointer; padding: 5px 10px; }
+        .search-container { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Gestion de Bibliothèque</h1>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Rechercher par titre ou auteur...">
+        <button onclick="searchBooks()">Rechercher</button>
+    </div>
+    
+    <button onclick="window.location.href='add-book.html'">Ajouter un livre</button>
+    
+    <table id="booksTable">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Date de publication</th>
+                <th>Disponibilité</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="booksList">
+            <!-- Les livres seront chargés ici par JavaScript -->
+        </tbody>
+    </table>
+    
+    <script src="script.js"></script>
+</body>
+</html>
