@@ -21,15 +21,12 @@ try {
 } catch (PDOException $e) {
     die("Erreuur lors de la création de la table : " . $e->getMessage());
 
-
-
-
 }
 
 
 $query = $pdo->query("SELECT * FROM books");
-$books = $query->fetchAll(PDO::FETCH_ASSOC);
 
+$books = $query->fetchAll(PDO::FETCH_ASSOC );
 
 header("Content-Type: application/json");
 echo json_encode($books);
