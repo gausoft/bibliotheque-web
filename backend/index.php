@@ -11,7 +11,7 @@ $sql = "CREATE TABLE IF NOT EXISTS books (
     title TEXT NOT NULL,
     author TEXT NOT NULL,
     published_at DATE NOT NULL,
-    available BOOLEAN DEFAULT 
+    available BOOLEAN DEFAULT 1
 
 )";
 
@@ -19,7 +19,7 @@ $sql = "CREATE TABLE IF NOT EXISTS books (
 try {
     $pdo->exec($sql);
 } catch (PDOException $e) {
-    die("Erreuur lors de la création de la table : " . $e->getMessage());
+    die("Erreur lors de la création de la table : " . $e->getMessage());
 
 }
 

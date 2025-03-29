@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un Livre</title>
+</head>
+<body>
+
+    
+    <h1>Ajouter un Livre</h1>
+    <form id="add-book-form">
+        <label>Titre: <input type="text" id="title" required></label><br>
+        <label>Auteur: <input type="text" id="author" required></label><br>
+        <label>Date de publication: <input type="date" id="published_at" required></label><br>
+        <button type="submit">Ajouter</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("add-book-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let book = {
+                title: document.getElementById("title").value,
+                author: document.getElementById("author").value,
+                published_at: document.getElementById("published_at").value
+            };
+
+            fetch("add-book.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(book)
+
+
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("message").textContent = data.message || data.error;
+            })
+            .catch(error => console.error("Erreur:", error));
+        });
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>

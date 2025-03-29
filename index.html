@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>lq liste des livres</title>
+    </head>
+    <body>
+        <h1>Liste des livres</h1>
+        <ul id="book-list"></ul>
+
+        <script>
+            fecth("index.php") 
+            .then(response => response.jsor())
+            .then(books => {
+
+                let bookList = doc.getElementById("book-list");
+                data.forEach(book => {
+
+                    let li = doc.createElement("li");
+                    li.textContent = `${book.title} - ${book.author} (${book.published_at});
+                    bookList.appendChild(li);
+              });
+
+              });
+        </script>
+    </body>
+    
+
+
+</html>
