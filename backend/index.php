@@ -6,14 +6,6 @@ $db = new Database();
 $pdo = $db->getConnection();
 
 
-$sql = "CREATE TABLE IF NOT EXISTS books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    author TEXT NOT NULL,
-    published_at DATE NOT NULL,
-    available BOOLEAN DEFAULT 1
-
-)";
 
 
 try {

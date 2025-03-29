@@ -16,8 +16,8 @@ $data = json_decode(file_get_contents("php://input"), true);
     
         $stmt->execute([
         ":title" => $data["title"],
-        
         ":author" => $data["author"],
+        ":published-at" => $data["published_at"],
         
     ]);
 

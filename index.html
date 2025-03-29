@@ -11,14 +11,14 @@
 
         <script>
             fecth("index.php") 
-            .then(response => response.jsor())
+            .then(response => response.json())
             .then(books => {
 
                 let bookList = doc.getElementById("book-list");
                 data.forEach(book => {
 
                     let li = doc.createElement("li");
-                    li.textContent = `${book.title} - ${book.author} (${book.published_at});
+                    li.textContent = `${book.title} - ${book.author} (${book.published_at})`;
                     bookList.appendChild(li);
               });
 

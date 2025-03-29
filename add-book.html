@@ -28,12 +28,10 @@
                 published_at: document.getElementById("published_at").value
             };
 
-            fetch("add-book.php", {
+            fetch("backend/add-book.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(book)
-
-
             })
             .then(response => response.json())
             .then(data => {
