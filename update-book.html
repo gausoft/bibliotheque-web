@@ -1,44 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Modifier un Livre</title>
-    <script>
-        async function fetchBooks() {
-            let response = await fetch("../backend/index.php");
-            let books = await response.json();
-            let select = document.getElementById("bookSelect");
-            select.innerHTML = '<option value="">Sélectionner un livre</option>';
-            books.forEach(book => {
-                select.innerHTML += `<option value="${book.id}">${book.title} - ${book.author}</option>`;
-            });
-        }
-
-        async function updateBook(event) {
-            event.preventDefault();
-            let id = document.getElementById("bookSelect").value;
-            let title = document.getElementById("title").value;
-            let author = document.getElementById("author").value;
-            let available = document.getElementById("available").checked ? 1 : 0;
-
-            await fetch("../backend/update-book.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, title, author, available })
-            });
-
-            alert("Livre mis à jour");
-        }
-
-        window.onload = fetchBooks;
-    </script>
-</head>
-<body>
-    <h2>Modifier un Livre</h2>
-    <select id="bookSelect" onchange="updateBook(event)"></select>
-    <input type="text" id="title" placeholder="Titre">
-    <input type="text" id="author" placeholder="Auteur">
+<form id="updateForm" onsubmit="updateBook(event)">
+    <select id="bookSelect" onchange="fillForm()"></select>
+    <input type="text" id="title" placeholder="Titre" required>
+    <input type="text" id="author" placeholder="Auteur" required>
+    <input type="date" id="published_at" required>
     <label><input type="checkbox" id="available"> Disponible</label>
-    <button onclick="updateBook(event)">Mettre à jour</button>
-</body>
-</html>
+    <button type="submit">Mettre à jour</button>
+</form>
